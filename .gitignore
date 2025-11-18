@@ -23,18 +23,6 @@ crash.*.log
 ############################################################
 .terraform/
 
-# Mantener el lock file en el repo (versionado de providers)
-# NO lo ignores:
-# .terraform.lock.hcl
-
-############################################################
-# Archivos sensibles de variables (si algún día los usan)
-# OJO: acá NO entran dev.tfvars ni prod.tfvars
-############################################################
-secret.tf
-secrets.tfvars
-secrets.auto.tfvars
-.env
 
 ############################################################
 # Plan files
@@ -56,7 +44,7 @@ secrets.auto.tfvars
 .history/
 *.code-workspace
 
-# JetBrains IDEs
+
 .idea/
 *.iml
 
@@ -71,8 +59,3 @@ secrets.auto.tfvars
 tmp/
 temp/
 
-############################################################
-# Keys / certificados
-############################################################
-*.pem
-*.key
