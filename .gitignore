@@ -1,0 +1,81 @@
+############################################################
+# OS-specific files
+############################################################
+.DS_Store
+Thumbs.db
+desktop.ini
+
+############################################################
+# Terraform local state (NO debe subirse nunca)
+############################################################
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+############################################################
+# Terraform crash logs
+############################################################
+crash.log
+crash.*.log
+
+############################################################
+# Terraform internal directories
+############################################################
+.terraform/
+.terraformrc
+terraform.rc
+
+############################################################
+# Terraform lock file (OPCIONAL ignorarlo, ver nota abajo)
+############################################################
+# Si usás módulos externos y querés definir versiones exactas,
+# NO lo ignores. Pero si trabajás en equipo y quieren evitar
+# conflictos, podés ignorarlo.
+# Recomendado: NO ignorarlo.
+# .terraform.lock.hcl
+# .terraform.lock.hcl.lock
+
+############################################################
+# Sensitive variable files
+############################################################
+*.tfvars
+*.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+secret.tf
+secrets.auto.tfvars
+
+############################################################
+# Plan files
+############################################################
+*.tfplan
+*.plan
+
+############################################################
+# Override files (no se deben subir)
+############################################################
+*_override.tf
+*_override.tf.json
+
+############################################################
+# Editor/IDE files
+############################################################
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+
+# JetBrains IDEs (por si alguien del equipo usa)
+.idea/
+*.iml
+
+############################################################
+# Logs
+############################################################
+*.log
+
+############################################################
+# Temporary files
+############################################################
+tmp/
+temp/
