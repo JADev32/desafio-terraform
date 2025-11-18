@@ -22,28 +22,7 @@ crash.*.log
 # Terraform internal directories
 ############################################################
 .terraform/
-.terraformrc
-terraform.rc
 
-############################################################
-# Terraform lock file (OPCIONAL ignorarlo, ver nota abajo)
-############################################################
-# Si usás módulos externos y querés definir versiones exactas,
-# NO lo ignores. Pero si trabajás en equipo y quieren evitar
-# conflictos, podés ignorarlo.
-# Recomendado: NO ignorarlo.
-# .terraform.lock.hcl
-# .terraform.lock.hcl.lock
-
-############################################################
-# Sensitive variable files
-############################################################
-*.tfvars
-*.tfvars.json
-*.auto.tfvars
-*.auto.tfvars.json
-secret.tf
-secrets.auto.tfvars
 
 ############################################################
 # Plan files
@@ -65,7 +44,7 @@ secrets.auto.tfvars
 .history/
 *.code-workspace
 
-# JetBrains IDEs (por si alguien del equipo usa)
+
 .idea/
 *.iml
 
@@ -79,3 +58,4 @@ secrets.auto.tfvars
 ############################################################
 tmp/
 temp/
+
