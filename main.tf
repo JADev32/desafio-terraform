@@ -18,3 +18,12 @@ module "network" {
 
   tags = local.common_tags
 }
+
+module "security" {
+  source = "./modules/security"
+
+  name                  = "${var.project_name}-${var.environment}"
+  vpc_id                = module.network.vpc_id
+  vpc_dns_resolver_cidr = "10.0.0.2/32"
+  tags                  = local.common_tags
+}
