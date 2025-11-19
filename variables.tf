@@ -46,6 +46,7 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
 ## variables target group
 variable "target_group_name" {
   description = "El nombre deseado para el Target Group (ej: lab3-target-group)."
@@ -65,5 +66,11 @@ variable "alb_name" {
 
 variable "acm_certificate_arn" {
   description = "ARN del certificado de ACM para el listener HTTPS."
+  type        = string
+}
+
+#variable route
+variable "hosted_zone_name_base" {
+  description = "El nombre base de la Hosted Zone existente en Route 53 (ej: santichamia.ownboarding.teratest.net.)."
   type        = string
 }

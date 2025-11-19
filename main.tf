@@ -50,7 +50,7 @@ module "efs" {
 }
 
 
-# 5) Application Load Balancer (ALB)
+# 5) Target Group (TG)
 module "target_group" {
   source = "./modules/tg"
 
@@ -90,4 +90,16 @@ module "ssm" {
   db_password = var.db_password
 
   tags = local.common_tags
+}
+
+# 8) Route 53 
+module "route53_record" {
+  source = "./modules/route53-acm"
+
+  domain_name        = "lab3.${var.hosted_zone_name_base}"
+  hosted_zone_name   = var.hosted_zone_name_base
+  
+  # Valores obtenidos del output del módulo ALB
+  alb_dns_name       = module.application_load_balancer.alb_dns_name
+  alb_zone_id        = module.application_load_balancer.alb_zone_id
 }
