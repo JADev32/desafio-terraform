@@ -99,14 +99,14 @@ module "ecr" {
   name = "${var.project_name}-${var.environment}"
   tags = local.common_tags
 }
-# 8) Route 53 
+# 9) Route 53 
 module "route53_record" {
   source = "./modules/route53-acm"
 
-  domain_name        = "lab3.${var.hosted_zone_name_base}"
-  hosted_zone_name   = var.hosted_zone_name_base
-  
+  domain_name      = "lab3.${trim(var.hosted_zone_name_base, ".")}"
+  hosted_zone_name = trim(var.hosted_zone_name_base, ".")
+
   # Valores obtenidos del output del módulo ALB
-  alb_dns_name       = module.application_load_balancer.alb_dns_name
-  alb_zone_id        = module.application_load_balancer.alb_zone_id
+  alb_dns_name = module.application_load_balancer.alb_dns_name
+  alb_zone_id  = module.application_load_balancer.alb_zone_id
 }
