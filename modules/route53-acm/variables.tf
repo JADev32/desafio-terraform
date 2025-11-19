@@ -1,20 +1,19 @@
 variable "domain_name" {
-  description = "El nombre de subdominio (ej: lab3.santichamia.ownboarding.teratest.net) a crear."
+  description = "FQDN del sitio (ej: lab3.santichamia.ownboarding.teratest.net.)."
   type        = string
 }
 
 variable "hosted_zone_name" {
-  description = "Nombre exacto de la Hosted Zone existente."
-  type        = string
-  default     = "santichamia.ownboarding.teratest.net."
-}
-
-variable "alb_zone_id" {
-  description = "El Zone ID del Application Load Balancer."
+  description = "Nombre de la Hosted Zone existente (ej: santichamia.ownboarding.teratest.net.)."
   type        = string
 }
 
 variable "alb_dns_name" {
-  description = "El DNS Name del Application Load Balancer (necesario para el alias)."
+  description = "DNS Name del ALB (ej: lab3-alb-123456.us-east-1.elb.amazonaws.com)."
+  type        = string
+}
+
+variable "alb_zone_id" {
+  description = "Hosted Zone ID del ALB."
   type        = string
 }
