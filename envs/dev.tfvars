@@ -2,6 +2,10 @@ project_name = "lab3-teracloud"
 environment  = "dev"
 aws_region   = "us-east-1"
 
+db_host = "mysql.lab3.local"
+db_name = "lab3db"
+db_user = "lab3user"
+
 target_group_name     = "lab3-target-group"
 tg_health_check_path  = "/"
 alb_name              = "lab3-alb"
