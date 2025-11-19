@@ -8,7 +8,7 @@ resource "aws_efs_file_system" "main" {
 }
 
 resource "aws_efs_mount_target" "main" {
-  for_each = toset(var.private_subnet_ids)
+  for_each = { for idx, subnet_id in var.private_subnet_ids : idx => subnet_id }
 
   file_system_id  = aws_efs_file_system.main.id
   subnet_id       = each.value

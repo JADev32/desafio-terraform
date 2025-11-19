@@ -19,6 +19,7 @@ module "network" {
   tags = local.common_tags
 }
 
+# 2) Seguridad
 module "security" {
   source = "./modules/security"
 
@@ -28,16 +29,49 @@ module "security" {
   tags                  = local.common_tags
 }
 
-# 3) Storage (EFS)
+# 3) IAM (Nuevos roles)
+module "iam" {
+  source = "./modules/iam"
+
+  prefix = "${var.project_name}-${var.environment}"
+}
+
+# 4) Storage (EFS)
 module "efs" {
   source = "./modules/efs"
 
   environment = var.environment
   name        = "${var.project_name}-${var.environment}"
 
-  private_subnet_ids = module.network.private_subnet_ids
-
-  efs_security_group_id = module.security.sg_efs_id
+  private_subnet_ids     = module.network.private_subnet_ids
+  efs_security_group_id  = module.security.sg_efs_id
 
   tags = local.common_tags
 }
+
+# 5) Application Load Balancer (ALB)
+module "target_group" {
+  source = "./modules/tg"
+
+  vpc_id = module.network.vpc_id
+  
+  name                = var.target_group_name
+  health_check_path = var.tg_health_check_path
+}
+
+# 6) Application Load Balancer (ALB)
+module "application_load_balancer" {
+  source = "./modules/alb" 
+
+  alb_name           = var.alb_name
+  alb_owner          = "Magali"
+
+  vpc_id             = module.network.vpc_id
+  public_subnet_ids  = module.network.public_subnet_ids
+  security_group_ids = [module.security.sg_alb_id] 
+  
+  target_group_arn    = module.target_group.target_group_arn
+  acm_certificate_arn = var.acm_certificate_arn 
+}
+
+
