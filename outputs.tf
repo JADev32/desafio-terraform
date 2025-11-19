@@ -53,3 +53,31 @@ output "iam_roles_arn" {
     codepipeline_role       = module.iam.codepipeline_role_arn
   }
 }
+
+output "alb_dns_name" {
+  description = "DNS Name bruto del ALB (sin Route 53)."
+  value       = module.application_load_balancer.alb_dns_name
+}
+
+output "target_group_arn" {
+  description = "ARN del Target Group del frontend."
+  value       = module.target_group.target_group_arn
+}
+
+output "ecr_repository_urls" {
+  description = "URLs de los repos ECR"
+  value = {
+    frontend = module.ecr.frontend_repository_url
+    mysql    = module.ecr.mysql_repository_url
+  }
+}
+
+output "app_public_fqdn" {
+  description = "Nombre público del sitio lab3."
+  value       = module.route53_record.record_fqdn
+}
+
+output "app_public_url" {
+  description = "URL pública HTTPS del sitio."
+  value       = "https://${module.route53_record.record_fqdn}"
+}
