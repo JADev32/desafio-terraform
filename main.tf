@@ -118,7 +118,7 @@ module "ecs_cluster" {
   name         = "${var.project_name}-${var.environment}"
   cluster_name = "${var.project_name}-${var.environment}-cluster"
 
-  ami_id        = "ami-0df10843d0987c3c0"
+  ami_id        = "ami-0e10f1555f1bb4385"
 
   instance_type = "t2.micro"
 

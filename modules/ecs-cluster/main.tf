@@ -17,10 +17,9 @@ echo "ECS_CLUSTER=${var.cluster_name}" >> /etc/ecs/ecs.config
 EOF
   )
 
-  vpc_security_group_ids = [var.sg_ecs_hosts_id]
-
   network_interfaces {
     associate_public_ip_address = false
+    security_groups             = [var.sg_ecs_hosts_id]
   }
 
   tag_specifications {

@@ -12,3 +12,8 @@ output "alb_dns_name" {
   description = "DNS Name del Application Load Balancer."
   value       = aws_lb.application_lb.dns_name
 }
+
+output "https_listener_arn" {
+  description = "ARN del listener HTTPS del ALB."
+  value       = aws_lb_listener.https_listener.arn
+}

@@ -17,11 +17,12 @@ resource "aws_iam_role" "ecs_instance_role" {
   })
 }
 
-# Sin el instance profile no se puede asociar el rol a las instancias EC2 del ASG/Launch Template, por eso lo descomento para usarlo.
-resource "aws_iam_instance_profile" "ecs_instance_profile" {
-  name = "${var.prefix}-ecs-instance-profile"
-  role = aws_iam_role.ecs_instance_role.name
+locals {
+  ecs_instance_profile_name = "${var.prefix}-ecs-instance-profile"
+  ecs_instance_profile_arn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/${var.prefix}-ecs-instance-profile"
 }
+
+data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role_policy_attachment" "ecs_instance_role_attachment" {
   role       = aws_iam_role.ecs_instance_role.name
