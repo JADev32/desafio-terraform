@@ -74,3 +74,10 @@ variable "hosted_zone_name_base" {
   description = "El nombre base de la Hosted Zone existente en Route 53 (ej: santichamia.ownboarding.teratest.net.)."
   type        = string
 }
+
+#variable img front
+variable "frontend_image_tag" {
+  description = "Tag de la imagen del frontend en ECR"
+  type        = string
+  default     = "latest"
+}
