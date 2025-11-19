@@ -19,6 +19,7 @@ module "network" {
   tags = local.common_tags
 }
 
+# 2) Security Groups
 module "security" {
   source = "./modules/security"
 
@@ -35,9 +36,25 @@ module "efs" {
   environment = var.environment
   name        = "${var.project_name}-${var.environment}"
 
-  private_subnet_ids = module.network.private_subnet_ids
-
+  private_subnet_ids   = module.network.private_subnet_ids
   efs_security_group_id = module.security.sg_efs_id
+
+  tags = local.common_tags
+}
+
+# 4) Parámetros de la base de datos en SSM
+module "ssm" {
+  source = "./modules/ssm"
+
+  name = "${var.project_name}-${var.environment}"
+
+  # Mejora: prefijo por ambiente → /lab3/dev/db/... o /lab3/prod/db/...
+  db_parameter_path_prefix = "/lab3/${var.environment}/db"
+
+  db_host     = var.db_host
+  db_name     = var.db_name
+  db_user     = var.db_user
+  db_password = var.db_password
 
   tags = local.common_tags
 }
