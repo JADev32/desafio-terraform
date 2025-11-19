@@ -110,3 +110,63 @@ module "route53_record" {
   alb_dns_name = module.application_load_balancer.alb_dns_name
   alb_zone_id  = module.application_load_balancer.alb_zone_id
 }
+
+# 10) ECS Cluster (EC2)
+module "ecs_cluster" {
+  source = "./modules/ecs-cluster"
+
+  name         = "${var.project_name}-${var.environment}"
+  cluster_name = "${var.project_name}-${var.environment}-cluster"
+
+  ami_id        = "ami-0df10843d0987c3c0"
+
+  instance_type = "t2.micro"
+
+  ecs_instance_profile_arn = module.iam.ecs_instance_profile_arn
+
+  private_subnets = module.network.private_subnet_ids
+  sg_ecs_hosts_id = module.security.sg_ecs_hosts_id
+
+  tags = local.common_tags
+}
+
+# 11) ECS Service - Frontend
+module "ecs_service_frontend" {
+  source = "./modules/ecs-service-frontend"
+
+  name                   = "${var.project_name}-${var.environment}"
+  cluster_name           = module.ecs_cluster.cluster_name
+  capacity_provider_name = module.ecs_cluster.capacity_provider_name
+
+  private_subnets = module.network.private_subnet_ids
+  sg_frontend_id  = module.security.sg_frontend_id
+
+  vpc_id           = module.network.vpc_id
+  alb_listener_arn = module.application_load_balancer.https_listener_arn
+
+  ecr_repo_url = module.ecr.frontend_repository_url
+  image_tag    = var.frontend_image_tag
+
+  ecs_task_execution_role_arn = module.iam.ecs_task_execution_role_arn
+
+  db_host = var.db_host
+}
+
+# 12) ECS Service - MySQL
+module "ecs_service_mysql" {
+  source = "./modules/ecs-service-mysql"
+
+  name         = "${var.project_name}-${var.environment}"
+  cluster_name = module.ecs_cluster.cluster_name
+
+  private_subnets = module.network.private_subnet_ids
+  sg_db_id        = module.security.sg_db_id
+
+  efs_id = module.efs.file_system_id
+
+  ecs_task_execution_role_arn = module.iam.ecs_task_execution_role_arn
+
+  mysql_image = module.ecr.mysql_repository_url
+  db_password = var.db_password
+  db_name     = var.db_name
+}
