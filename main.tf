@@ -91,3 +91,11 @@ module "ssm" {
 
   tags = local.common_tags
 }
+
+# 8) Container Registry (ECR)
+module "ecr" {
+  source = "./modules/ecr"
+
+  name = "${var.project_name}-${var.environment}"
+  tags = local.common_tags
+}
