@@ -92,6 +92,13 @@ module "ssm" {
   tags = local.common_tags
 }
 
+# 8) Container Registry (ECR)
+module "ecr" {
+  source = "./modules/ecr"
+
+  name = "${var.project_name}-${var.environment}"
+  tags = local.common_tags
+}
 # 8) Route 53 
 module "route53_record" {
   source = "./modules/route53-acm"
