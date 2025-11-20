@@ -1,1 +1,1 @@
-db_password = "super-secreto-123"
+db_pass = "super-secreto-123"

@@ -17,22 +17,22 @@ resource "aws_ecs_task_definition" "frontend_task" {
         }
       ]
 
-      environment = [
+      secrets = [
         {
-          name  = "DB_HOST"
-          value = var.db_host
-          },
-        {
-          name  = "DB_NAME"
-          value = var.db_name
+          name      = "DATABASE_HOST"
+          valueFrom = var.db_host_arn
         },
         {
-          name  = "DB_USER"
-          value = var.db_user
+          name      = "DATABASE_NAME"
+          valueFrom = var.db_name_arn
         },
         {
-          name  = "DB_PASS"
-          value = var.db_password
+          name      = "DATABASE_USER"
+          valueFrom = var.db_user_arn
+        },
+        {
+          name      = "DATABASE_PASSWORD"
+          valueFrom = var.db_pass_arn
         }
       ]
     }
@@ -51,6 +51,7 @@ resource "aws_ecs_service" "frontend_service" {
   capacity_provider_strategy {
     capacity_provider = var.capacity_provider_name
     weight            = 1
+    base              = 1
   }
 
   network_configuration {
