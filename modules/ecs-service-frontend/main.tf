@@ -27,30 +27,7 @@ resource "aws_ecs_task_definition" "frontend_task" {
   ])
 
   cpu    = 256
-  memory = 512
-}
-
-resource "aws_lb_target_group" "frontend_tg" {
-  name     = "${var.name}-frontend-tg"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = var.vpc_id
-}
-
-resource "aws_lb_listener_rule" "frontend_rule" {
-  listener_arn = var.alb_listener_arn
-  priority     = 10
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.frontend_tg.arn
-  }
-
-  condition {
-    path_pattern {
-      values = ["/*"]
-    }
-  }
+  memory = 256
 }
 
 resource "aws_ecs_service" "frontend_service" {
@@ -70,7 +47,7 @@ resource "aws_ecs_service" "frontend_service" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.frontend_tg.arn
+    target_group_arn = var.target_group_arn
     container_name   = "php-frontend"
     container_port   = 80
   }

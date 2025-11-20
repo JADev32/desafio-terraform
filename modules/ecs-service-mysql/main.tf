@@ -41,8 +41,8 @@ resource "aws_ecs_task_definition" "mysql_task" {
     }
   ])
 
-  cpu    = 512
-  memory = 1024
+  cpu    = 256
+  memory = 512
 }
 
 resource "aws_ecs_service" "mysql_service" {

@@ -6,6 +6,16 @@ locals {
   }
 }
 
+# AMI ECS Optimizada recomendada (Amazon Linux 2) vía SSM
+data "aws_ssm_parameter" "ecs_ami" {
+  name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+}
+
+locals {
+  # ID de la AMI que usamos en el Launch Template del cluster ECS
+  ecs_ami_id = data.aws_ssm_parameter.ecs_ami.value
+}
+
 # 1) Red
 module "network" {
   source = "./modules/network"
@@ -49,7 +59,6 @@ module "efs" {
   tags = local.common_tags
 }
 
-
 # 5) Target Group (TG)
 module "target_group" {
   source = "./modules/tg"
@@ -81,7 +90,7 @@ module "ssm" {
 
   name = "${var.project_name}-${var.environment}"
 
-  # Mejora: prefijo por ambiente → /lab3/dev/db/... o /lab3/prod/db/...
+  # prefijo por ambiente → /lab3/dev/db/... o /lab3/prod/db/...
   db_parameter_path_prefix = "/lab3/${var.environment}/db"
 
   db_host     = var.db_host
@@ -99,6 +108,7 @@ module "ecr" {
   name = "${var.project_name}-${var.environment}"
   tags = local.common_tags
 }
+
 # 9) Route 53 
 module "route53_record" {
   source = "./modules/route53-acm"
@@ -118,8 +128,8 @@ module "ecs_cluster" {
   name         = "${var.project_name}-${var.environment}"
   cluster_name = "${var.project_name}-${var.environment}-cluster"
 
-  ami_id        = "ami-0df10843d0987c3c0"
-
+  # <<< CAMBIO IMPORTANTE: dejamos de hardcodear la AMI >>>
+  ami_id        = local.ecs_ami_id
   instance_type = "t2.micro"
 
   ecs_instance_profile_arn = module.iam.ecs_instance_profile_arn
@@ -141,8 +151,7 @@ module "ecs_service_frontend" {
   private_subnets = module.network.private_subnet_ids
   sg_frontend_id  = module.security.sg_frontend_id
 
-  vpc_id           = module.network.vpc_id
-  alb_listener_arn = module.application_load_balancer.https_listener_arn
+  target_group_arn = module.target_group.target_group_arn
 
   ecr_repo_url = module.ecr.frontend_repository_url
   image_tag    = var.frontend_image_tag

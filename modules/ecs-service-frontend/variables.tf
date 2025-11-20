@@ -7,8 +7,7 @@ variable "private_subnets" {
 }
 
 variable "sg_frontend_id" {}
-variable "vpc_id" {}
-variable "alb_listener_arn" {}
+variable "target_group_arn" {}
 
 variable "ecr_repo_url" {}
 variable "image_tag" {}
