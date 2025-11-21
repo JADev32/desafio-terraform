@@ -104,11 +104,19 @@ resource "aws_codebuild_project" "build" {
       name  = "IMAGE_TAG"
       value = var.image_tag
     }
+    environment_variable {
+      name  = "CONTAINER_NAME"
+      value = "php-frontend"
+    }
+    environment_variable {
+      name  = "AWS_ACCOUNT_ID"
+      value = var.aws_account_id
+    }
   }
 
   source {
     type            = "CODEPIPELINE"
-    buildspec       = fileexists("${path.module}/buildspec.yml") ? "${path.module}/buildspec.yml" : "buildspec.yml"
+    buildspec       = "buildspec.yml"
   }
 
   tags = var.tags

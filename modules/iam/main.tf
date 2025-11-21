@@ -118,52 +118,6 @@ resource "aws_iam_role_policy_attachment" "ecs_task_exec_ssm" {
 
 
 ##########################################
-# CODEBUILD ROLE
-##########################################
-
-resource "aws_iam_role" "codebuild_role" {
-  name = "${var.prefix}-codebuild-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Service = "codebuild.amazonaws.com"
-      }
-      Action = "sts:AssumeRole"
-    }]
-  })
-}
-
-resource "aws_iam_policy" "codebuild_policy" {
-  name = "${var.prefix}-codebuild-policy"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Action = [
-        "ecr:GetAuthorizationToken",
-        "ecr:BatchCheckLayers",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage",
-        "ecr:PutImage",
-        "logs:*",
-        "s3:*"
-      ]
-      Resource = "*"
-    }]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "codebuild_policy_attachment" {
-  role       = aws_iam_role.codebuild_role.name
-  policy_arn = aws_iam_policy.codebuild_policy.arn
-}
-
-
-##########################################
 # CODEPIPELINE ROLE
 ##########################################
 
@@ -182,8 +136,9 @@ resource "aws_iam_role" "codepipeline_role" {
   })
 }
 
-resource "aws_iam_policy" "codepipeline_policy" {
-  name = "${var.prefix}-codepipeline-policy"
+resource "aws_iam_role_policy" "codepipeline_inline" {
+  name = "${var.prefix}-codepipeline-inline"
+  role = aws_iam_role.codepipeline_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -206,13 +161,89 @@ resource "aws_iam_policy" "codepipeline_policy" {
           "codestar-connections:UseConnection",
           "codeconnections:UseConnection"
         ]
-        Resource = "*"
+        Resource = "arn:aws:codeconnections:us-east-1:607007849260:connection/7f088dae-e10d-4291-8f61-730e6f696dfb"
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "codepipeline_policy_attachment" {
-  role       = aws_iam_role.codepipeline_role.name
-  policy_arn = aws_iam_policy.codepipeline_policy.arn
+##########################################
+# CODEBUILD ROLE
+##########################################
+
+resource "aws_iam_role" "codebuild_role" {
+  name = "${var.prefix}-codebuild-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = "codebuild.amazonaws.com"
+      }
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+# INLINE POLICY para CodeBuild
+resource "aws_iam_role_policy" "codebuild_inline" {
+  name = "${var.prefix}-codebuild-inline"
+  role = aws_iam_role.codebuild_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      # Logs para que CodeBuild pueda escribir en CloudWatch
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "*"
+      },
+
+      # Acceso al bucket de artifacts del pipeline (y en general a artefactos S3)
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:GetObjectVersion",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ]
+        Resource = "*"
+      },
+
+      # Permisos ECR necesarios para docker pull/push
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:PutImage",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload"
+        ]
+        Resource = "*"
+      },
+
+      # Si en el buildspec usás env.parameter-store (SSM + KMS)
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath",
+          "kms:Decrypt"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
 }

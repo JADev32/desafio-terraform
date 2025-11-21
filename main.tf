@@ -10,6 +10,7 @@ data "aws_ssm_parameter" "ecs_ami" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
 }
 
+
 locals {
   ecs_ami_id = data.aws_ssm_parameter.ecs_ami.value
 }
@@ -92,10 +93,10 @@ module "ssm" {
   # prefijo por ambiente → /lab3/dev/db/... o /lab3/prod/db/...
   db_parameter_path_prefix = "/lab3/${var.environment}/db"
 
-  db_host     = var.db_host
-  db_name     = var.db_name
-  db_user     = var.db_user
-  db_pass     = var.db_pass
+  db_host = var.db_host
+  db_name = var.db_name
+  db_user = var.db_user
+  db_pass = var.db_pass
 
   tags = local.common_tags
 }
@@ -189,12 +190,12 @@ module "ecs_service_mysql" {
 module "pipeline" {
   source = "./modules/pipeline"
 
-  name_prefix        = "${var.project_name}-${var.environment}"
-  aws_region         = var.aws_region
-  aws_account_id     = data.aws_caller_identity.current.account_id
-  codeconnection_arn = var.codeconnection_arn
+  name_prefix         = "${var.project_name}-${var.environment}"
+  aws_region          = var.aws_region
+  aws_account_id      = data.aws_caller_identity.current.account_id
+  codeconnection_arn  = var.codeconnection_arn
   github_full_repo_id = var.github_full_repo_id
-  branch             = var.github_branch
+  branch              = var.github_branch
 
   codebuild_role_arn    = module.iam.codebuild_role_arn
   codepipeline_role_arn = module.iam.codepipeline_role_arn
