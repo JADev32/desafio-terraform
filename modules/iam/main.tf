@@ -187,18 +187,28 @@ resource "aws_iam_policy" "codepipeline_policy" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Action = [
-        "iam:PassRole",
-        "ecs:*",
-        "ecr:*",
-        "s3:*",
-        "codebuild:*",
-        "cloudwatch:*"
-      ]
-      Resource = "*"
-    }]
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:PassRole",
+          "ecs:*",
+          "ecr:*",
+          "s3:*",
+          "codebuild:*",
+          "cloudwatch:*"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "codestar-connections:UseConnection",
+          "codeconnections:UseConnection"
+        ]
+        Resource = "*"
+      }
+    ]
   })
 }
 

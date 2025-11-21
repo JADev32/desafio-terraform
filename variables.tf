@@ -82,3 +82,20 @@ variable "frontend_image_tag" {
   default     = "latest"
 }
 
+## variables pipeline
+variable "codeconnection_arn" {
+  description = "ARN de CodeStar Connection para GitHub"
+  type        = string
+}
+
+variable "github_full_repo_id" {
+  description = "Full repository id en GitHub (owner/repo)"
+  type        = string
+}
+
+variable "github_branch" {
+  description = "Branch de GitHub para el pipeline"
+  type        = string
+  default     = "main"
+}
+

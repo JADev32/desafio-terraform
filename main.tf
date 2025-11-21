@@ -181,7 +181,30 @@ module "ecs_service_mysql" {
 
   ecs_task_execution_role_arn = module.iam.ecs_task_execution_role_arn
 
-  mysql_image         = module.ecr.mysql_repository_url
+  mysql_image          = module.ecr.mysql_repository_url
   service_registry_arn = module.service_discovery.mysql_service_arn
+}
+
+# 14) Pipeline CI/CD
+module "pipeline" {
+  source = "./modules/pipeline"
+
+  name_prefix        = "${var.project_name}-${var.environment}"
+  aws_region         = var.aws_region
+  aws_account_id     = data.aws_caller_identity.current.account_id
+  codeconnection_arn = var.codeconnection_arn
+  github_full_repo_id = var.github_full_repo_id
+  branch             = var.github_branch
+
+  codebuild_role_arn    = module.iam.codebuild_role_arn
+  codepipeline_role_arn = module.iam.codepipeline_role_arn
+
+  ecr_repository_name = module.ecr.frontend_repository_name
+  image_tag           = var.frontend_image_tag
+
+  ecs_cluster_name = module.ecs_cluster.cluster_name
+  ecs_service_name = module.ecs_service_frontend.service_name
+
+  tags = local.common_tags
 }
 

@@ -13,9 +13,20 @@ resource "aws_s3_bucket" "pipeline_artifacts" {
   tags = merge(var.tags, { Name = "${var.name_prefix}-pipeline-artifacts" })
 }
 
-resource "aws_s3_bucket_acl" "pipeline_artifacts_acl" {
+resource "aws_s3_bucket_ownership_controls" "pipeline_artifacts_ownership" {
   bucket = aws_s3_bucket.pipeline_artifacts.id
-  acl    = "private"
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "pipeline_artifacts_pab" {
+  bucket = aws_s3_bucket.pipeline_artifacts.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_versioning" "pipeline_artifacts_versioning" {
@@ -34,9 +45,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "pipeline_artifact
   }
 }
 
-# Policy to allow CodePipeline/CodeBuild to use the bucket (minimal)
+# Policy to allow CodePipeline/CodeBuild to use the bucket
 resource "aws_s3_bucket_policy" "pipeline_bucket_policy" {
   bucket = aws_s3_bucket.pipeline_artifacts.id
+  depends_on = [aws_s3_bucket_public_access_block.pipeline_artifacts_pab]
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -44,19 +56,22 @@ resource "aws_s3_bucket_policy" "pipeline_bucket_policy" {
       {
         Sid = "AllowCodeBuildCodePipelineAccess"
         Effect = "Allow"
-        Principal = "*"
+        Principal = {
+          Service = [
+            "codepipeline.amazonaws.com",
+            "codebuild.amazonaws.com"
+          ]
+        }
         Action = [
           "s3:GetObject",
           "s3:GetObjectVersion",
           "s3:PutObject",
-          "s3:PutObjectAcl",
           "s3:ListBucket"
         ]
         Resource = [
           aws_s3_bucket.pipeline_artifacts.arn,
           "${aws_s3_bucket.pipeline_artifacts.arn}/*"
         ]
-        Condition = {}
       }
     ]
   })
