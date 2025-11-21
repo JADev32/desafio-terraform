@@ -10,21 +10,28 @@ terraform {
 # S3 bucket para artifacts del pipeline
 resource "aws_s3_bucket" "pipeline_artifacts" {
   bucket = "${var.name_prefix}-pipeline-artifacts-${replace(var.aws_account_id, "/","")}"
+  tags = merge(var.tags, { Name = "${var.name_prefix}-pipeline-artifacts" })
+}
+
+resource "aws_s3_bucket_acl" "pipeline_artifacts_acl" {
+  bucket = aws_s3_bucket.pipeline_artifacts.id
   acl    = "private"
+}
 
-  versioning {
-    enabled = true
+resource "aws_s3_bucket_versioning" "pipeline_artifacts_versioning" {
+  bucket = aws_s3_bucket.pipeline_artifacts.id
+  versioning_configuration {
+    status = "Enabled"
   }
+}
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+resource "aws_s3_bucket_server_side_encryption_configuration" "pipeline_artifacts_encryption" {
+  bucket = aws_s3_bucket.pipeline_artifacts.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
-
-  tags = merge(var.tags, { Name = "${var.name_prefix}-pipeline-artifacts" })
 }
 
 # Policy to allow CodePipeline/CodeBuild to use the bucket (minimal)
