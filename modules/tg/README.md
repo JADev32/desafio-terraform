@@ -1,7 +1,6 @@
 # Módulo Terraform: Target Group para ALB/NLB
 
-Este módulo crea un **Target Group** en AWS, asociado a una VPC y listo para integrarse con un **Application Load Balancer (ALB)** o **Network Load Balancer (NLB)**.
-Incluye configuración de **Health Check** para monitorear la salud de los targets.
+Este módulo crea un **Target Group** en AWS, asociado a una VPC y listo para integrarse con un **Application Load Balancer (ALB)** .
 
 ---
 
@@ -21,7 +20,7 @@ Incluye configuración de **Health Check** para monitorear la salud de los targe
 | `vpc_id`            | string | ID de la VPC donde se desplegará el Target Group. | —                   |
 | `port`              | number | Puerto de escucha para el tráfico.                | 80                  |
 | `protocol`          | string | Protocolo del tráfico (HTTP, HTTPS, etc.).        | `HTTP`              |
-| `health_check_path` | string | Ruta HTTP utilizada para el Health Check.         | `/css/twitter.css`  |
+| `health_check_path` | string | Ruta HTTP utilizada para el Health Check.         | `/`                 |
 
 ---
 
@@ -44,5 +43,3 @@ module "target_group" {
 
 * El Target Group está configurado con **target_type = "ip"**, adecuado para ECS o instancias con IP dinámica.
 * El **Health Check** revisa el path definido (`health_check_path`) en el puerto de tráfico (`traffic-port`) usando HTTP.
-* Se asigna un tag `Name` con el valor de la variable `name` para fácil identificación.
-* Compatible tanto con ALB como con NLB que soporten targets tipo IP.

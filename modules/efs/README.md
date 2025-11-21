@@ -72,21 +72,11 @@ module "efs" {
   efs_security_group_id = module.sg_efs.id
 
   tags = {
-    Owner       = "magui"
+    Owner       = "lab3"
     Application = "mysql-storage"
   }
 }
 ```
-
-🔒 Seguridad
-
-EFS cifrado en reposo.
-
-Accesible solo a través del Security Group especificado.
-
-Mount Targets ubicados exclusivamente en subnets privadas.
-
-Access Point con permisos adecuados para MySQL, evitando problemas de permisos dentro del contenedor.
 
 📝 Notas
 
@@ -94,4 +84,3 @@ Este módulo asume que existen al menos dos subnets privadas.
 
 No crea el Security Group; debe ser pasado como parámetro.
 
-El Access Point facilita el montaje seguro desde ECS o EC2, recomendado para tareas con usuario no root.

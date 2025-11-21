@@ -1,18 +1,41 @@
 # modules/ecs-service-mysql/variables.tf
-variable "name" {}
-variable "cluster_name" {}
 
-variable "private_subnets" {
-  type = list(string)
+variable "name" {
+  description = "Nombre base que se usará como prefijo para nombrar los recursos (ECS Service, Task Definition, etc.)."
+  type        = string
 }
 
-variable "sg_db_id" {}
-variable "efs_id" {}
+variable "cluster_name" {
+  description = "Nombre del clúster ECS donde se desplegará el servicio MySQL."
+  type        = string
+}
 
-variable "ecs_task_execution_role_arn" {}
-variable "mysql_image" {}
+variable "private_subnets" {
+  description = "Lista de IDs de las subredes privadas donde se desplegará la tarea ECS (MySQL)."
+  type        = list(string)
+}
+
+variable "sg_db_id" {
+  description = "ID del Security Group (Grupo de Seguridad) que será asignado al servicio MySQL para controlar el tráfico entrante/saliente."
+  type        = string
+}
+
+variable "efs_id" {
+  description = "ID del sistema de archivos EFS que se montará en la tarea MySQL para la persistencia de datos."
+  type        = string
+}
+
+variable "ecs_task_execution_role_arn" {
+  description = "ARN del rol de ejecución de tarea de ECS (ECS Task Execution Role) que otorga permisos para extraer la imagen y publicar logs."
+  type        = string
+}
+
+variable "mysql_image" {
+  description = "Nombre o URI de la imagen Docker de MySQL que se utilizará para el contenedor (ej. 'mysql/mysql-server:8.0')."
+  type        = string
+}
 
 variable "service_registry_arn" {
   type        = string
-  description = "ARN del servicio de Cloud Map para MySQL"
+  description = "ARN del servicio de Cloud Map para MySQL al que se registrará el servicio ECS (para service discovery)."
 }

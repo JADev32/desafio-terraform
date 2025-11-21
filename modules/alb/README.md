@@ -64,7 +64,7 @@ module "alb" {
   security_group_ids  = [module.sg_alb.id]
   target_group_arn    = module.target_group.arn
   acm_certificate_arn = aws_acm_certificate.cert.arn
-  alb_owner           = "magui"
+  alb_owner           = "lab3"
 }
 ```
 

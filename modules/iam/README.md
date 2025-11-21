@@ -37,12 +37,6 @@ Permite a CodePipeline:
 
 ---
 
-## 📂 Estructura del módulo
-modules/
-└── iam/
-├── main.tf
-├── variables.tf
-└── outputs.tf
 
 ---
 
@@ -75,23 +69,3 @@ module "iam" {
 }
 
 ```
-
-🔒 Seguridad
-
-Este módulo aplica buenas prácticas:
-
-Uso de roles independientes por servicio.
-
-Policies separadas para auditoría y troubleshooting.
-
-Limitación de acciones a las mínimas necesarias (aunque algunas políticas son amplias por simplicidad del laboratorio).
-
-IAM Roles con trust policies específicas.
-
-📝 Notas
-
-Si usás ECS Fargate, el Instance Role + Instance Profile no se usa (solo Task Execution Role).
-
-Para producción deberías reemplazar "Resource": "*" por ARNs específicos.
-
-CodePipeline requiere permisos amplios debido al workflow multi-servicio.

@@ -52,7 +52,7 @@ module "ecr" {
   name = "lab3"
   tags = {
     Environment = "dev"
-    Owner       = "magui"
+    Owner       = "lab3"
   }
 }
 ```
@@ -60,7 +60,3 @@ module "ecr" {
 📝 Notas
 
 Ambos repositorios permiten image_tag_mutability = MUTABLE, lo cual permite sobrescribir tags existentes.
-
-El escaneo de vulnerabilidades en imágenes está habilitado mediante scan_on_push = true.
-
-Las políticas de ciclo de vida ayudan a evitar costos innecesarios por almacenar demasiadas imágenes antiguas.

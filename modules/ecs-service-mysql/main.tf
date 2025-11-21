@@ -28,7 +28,6 @@ resource "aws_ecs_task_definition" "mysql_task" {
         }
       ]
 
-      # 👇 EXACTAMENTE lo que tenías en la task que funcionaba
       environment = [
         { name = "MYSQL_DATABASE",      value = "app_db"    },
         { name = "MYSQL_ROOT_PASSWORD", value = "password" }

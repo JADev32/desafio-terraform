@@ -55,6 +55,5 @@ module "ssm" {
 * La contraseña se guarda como **SecureString**, por lo que está encriptada y protegida.
 * Los parámetros pueden usarse en **Task Definitions** mediante `valueFrom`.
 * Se pueden agregar tags adicionales mediante la variable `tags`.
-* Se sobrescriben automáticamente si cambian los valores (`overwrite = true`).
 
 ---
