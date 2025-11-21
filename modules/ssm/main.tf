@@ -1,5 +1,4 @@
 locals {
-  # Nos aseguramos de no terminar en doble barra
   db_path = trimsuffix(var.db_parameter_path_prefix, "/")
 }
 
