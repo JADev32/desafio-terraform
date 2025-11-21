@@ -41,10 +41,12 @@ Obtiene automáticamente la Hosted Zone existente en Route 53 (no crea una nueva
 
 ```hcl
 module "route53" {
-  source = "./modules/route53"
+  source = "./modules/route53-acm"
 
   domain_name       = "app.lab3.example.com."
   hosted_zone_name  = "lab3.example.com."
+
+  # Valores obtenidos del output del módulo ALB
   alb_dns_name      = module.alb.dns_name
   alb_zone_id       = module.alb.zone_id
 }
@@ -55,10 +57,6 @@ module "route53" {
 ## 🔎 Detalles importantes
 
 * El módulo **no crea Hosted Zones**, solo usa una existente.
-* El registro es tipo **A Alias**, que:
-
-  * No tiene costo
-  * Se actualiza automáticamente si cambia la IP del ALB
-* `evaluate_target_health = true` permite que Route 53 considere la salud del ALB.
+* El registro es tipo **A Alias**
 
 ---

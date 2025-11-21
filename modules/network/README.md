@@ -1,166 +1,70 @@
-# Terraform AWS Infrastructure
+## 🌐 Documentación del Módulo Terraform: `network`
 
-Este proyecto contiene la infraestructura base de AWS implementada con **Terraform**, organizada en módulos reutilizables.
-Actualmente incluye:
+Este módulo crea una **VPC** (Virtual Private Cloud) con una configuración de red básica y altamente disponible en AWS, incluyendo subredes públicas y privadas, un Internet Gateway (IGW), un único NAT Gateway (NGW) y las tablas de ruteo asociadas.
 
-* **Módulo VPC**
-* **Módulo IAM Roles & Policies para ECS, CodeBuild y CodePipeline**
+-----
 
----
+## 🏗️ Recursos Creados
 
-## 📌 Estructura del Proyecto
+  * **1** `aws_vpc`: La red principal.
+  * **1** `aws_internet_gateway`: Permite la comunicación saliente e internet para la VPC.
+  * **1** `aws_eip`: Dirección IP elástica dedicada para el NAT Gateway.
+  * **1** `aws_nat_gateway`: Permite que las subredes privadas accedan a internet.
+  * **N** `aws_subnet`: Subredes públicas y privadas, donde $N = \text{Número de AZs}$ (zonas de disponibilidad) configuradas.
+  * **1** `aws_route_table`: Tabla de ruteo para las subredes públicas.
+  * **N** `aws_route_table`: Tablas de ruteo para las subredes privadas (una por subred privada).
 
-```
-.
-├── modules
-│   ├── vpc/
-│   └── iam/
-└── main.tf
-```
+-----
 
-Cada módulo está diseñado para ser reutilizable, desacoplado y fácilmente integrable con otros módulos (ECS, ALB, RDS, etc.).
-
----
-
-# 🟦 MÓDULO: VPC
-
-Este módulo crea la red principal donde se ejecutarán los servicios.
-Incluye:
-
-### ✔️ Recursos creados
-
-* VPC con DNS habilitado
-* Internet Gateway
-* Subnets públicas (N subnets)
-* Subnets privadas (N subnets)
-* Elastic IP para NAT Gateway
-* NAT Gateway en la primera subnet pública
-* Route Tables:
-
-  * **1 pública** (salida a Internet vía IGW)
-  * **N privadas** (salida vía NAT Gateway)
-* Asociaciones de route tables
-
----
-
-## 📥 Variables del módulo VPC
-
-| Variable               | Tipo         | Descripción                  |
-| ---------------------- | ------------ | ---------------------------- |
-| `name`                 | string       | Prefijo para nombres lógicos |
-| `vpc_cidr`             | string       | CIDR principal de la VPC     |
-| `azs`                  | list(string) | Availability Zones           |
-| `public_subnet_cidrs`  | list(string) | Lista de CIDRs públicas      |
-| `private_subnet_cidrs` | list(string) | Lista de CIDRs privadas      |
-| `tags`                 | map(string)  | Tags opcionales              |
-
----
-
-## 📤 Outputs del módulo VPC
-
-| Output                    | Descripción               |
-| ------------------------- | ------------------------- |
-| `vpc_id`                  | ID de la VPC              |
-| `vpc_cidr_block`          | CIDR de la VPC            |
-| `public_subnet_ids`       | Lista de subnets públicas |
-| `private_subnet_ids`      | Lista de subnets privadas |
-| `internet_gateway_id`     | ID del IGW                |
-| `nat_gateway_id`          | ID del NAT                |
-| `public_route_table_id`   | RTB pública               |
-| `private_route_table_ids` | Lista RTBs privadas       |
-
----
-
-# 🟩 MÓDULO: IAM (ECS, CodeBuild, CodePipeline)
-
-Este módulo crea todos los roles necesarios para que la infraestructura funcione correctamente.
-
----
-
-## ✔️ ECS Instance Role & Instance Profile
-
-Rol utilizado por instancias EC2 dentro del cluster ECS.
-
-Incluye:
-
-* `AmazonEC2ContainerServiceforEC2Role`
-* Instance Profile requerido para asociarlo al Launch Template / ASG.
-
-### Output:
-
-* `ecs_instance_role_arn`
-* `ecs_instance_profile_arn`
-
----
-
-## ✔️ ECS Task Execution Role
-
-Rol usado por las ECS Tasks (Fargate o EC2).
-
-Incluye:
-
-* `AmazonECSTaskExecutionRolePolicy`
-* Política custom para:
-
-  * CloudWatch Logs
-  * SSM Parameter Store
-  * KMS Decrypt
-
-### Output:
-
-* `ecs_task_execution_role_arn`
-
----
-
-## ✔️ CodeBuild Role
-
-Permisos necesarios para:
-
-* Obtener/pushear imágenes a ECR
-* Logs
-* S3 artifacts
-
-### Output:
-
-* `codebuild_role_arn`
-
----
-
-## ✔️ CodePipeline Role
-
-Permite que CodePipeline interactúe con:
-
-* IAM (PassRole)
-* ECS deployments
-* CodeBuild
-* ECR
-* S3
-
-### Output:
-
-* `codepipeline_role_arn`
-
----
-
-# 🚀 Cómo usar estos módulos
-
-### Ejemplo en un `main.tf`
+## 📑 Ejemplo de Uso
 
 ```hcl
 module "network" {
   source = "./modules/network"
 
-  name                 = "lab3"
-  vpc_cidr             = "10.0.0.0/16"
-  azs                  = ["us-east-1a", "us-east-1b"]
-  public_subnet_cidrs  = ["10.0.0.0/24", "10.0.16.0/24"]
+  # Nombres
+  name                 = "${var.project_name}-${var.environment}"
+  
+  # Bloque de red principal
+  vpc_cidr             = "10.0.0.0/16"
+  
+  # Configuración de subredes (debe haber el mismo número en azs, public_subnet_cidrs y private_subnet_cidrs)
+  azs                  = ["us-east-1a", "us-east-1b"]
+  public_subnet_cidrs  = ["10.0.0.0/24", "10.0.16.0/24"]
   private_subnet_cidrs = ["10.0.128.0/24", "10.0.144.0/24"]
 
-  tags = = {
-    Project = "Lab3"
-  }
+  # Tags comunes
+  tags = local.common_tags
 }
 ```
+
+-----
+
+## 📥 Variables de Entrada (Inputs)
+
+| Nombre | Descripción | Tipo | Valor por Defecto |
+| :--- | :--- | :--- | :--- |
+| **`name`** | Prefijo para nombres lógicos (tags Name) de todos los recursos. | `string` | n/a |
+| **`vpc_cidr`** | CIDR block de la VPC (ej. `10.0.0.0/16`). | `string` | n/a |
+| **`azs`** | Lista de AZs donde se crearán las subredes (ej. `["us-east-1a", "us-east-1b"]`). La cantidad define el número de subredes. | `list(string)` | n/a |
+| **`public_subnet_cidrs`** | Lista de CIDRs para las subredes **públicas**, en el mismo orden que `azs`. | `list(string)` | n/a |
+| **`private_subnet_cidrs`** | Lista de CIDRs para las subredes **privadas**, en el mismo orden que `azs`. | `list(string)` | n/a |
+| **`tags`** | Tags comunes a aplicar a todos los recursos creados. | `map(string)` | `{}` |
+
+-----
+
+## 📤 Valores de Salida (Outputs)
+
+| Nombre | Descripción | Valor |
+| :--- | :--- | :--- |
+| **`vpc_id`** | ID de la VPC creada. | `aws_vpc.this.id` |
+| **`vpc_cidr_block`** | CIDR de la VPC. | `aws_vpc.this.cidr_block` |
+| **`internet_gateway_id`** | ID del Internet Gateway (IGW). | `aws_internet_gateway.this.id` |
+| **`nat_gateway_id`** | ID del NAT Gateway (NGW) creado. | `aws_nat_gateway.this.id` |
+| **`public_subnet_ids`** | Lista de IDs de subnets públicas. | `aws_subnet.public.*.id` |
+| **`private_subnet_ids`** | Lista de IDs de subnets privadas. | `aws_subnet.private.*.id` |
+| **`public_route_table_id`** | ID de la Route table pública (con ruta a IGW). | `aws_route_table.public.id` |
+| **`private_route_table_ids`** | Lista de IDs de Route tables privadas (con ruta a NGW). | `aws_route_table.private.*.id` |
 
 
 
