@@ -52,6 +52,12 @@ resource "aws_ecs_service" "mysql_service" {
   task_definition = aws_ecs_task_definition.mysql_task.arn
   desired_count   = 1
 
+  capacity_provider_strategy {
+    capacity_provider = var.capacity_provider_name
+    weight            = 1
+    base              = 1
+  }
+
   network_configuration {
     subnets         = var.private_subnets
     security_groups = [var.sg_db_id]

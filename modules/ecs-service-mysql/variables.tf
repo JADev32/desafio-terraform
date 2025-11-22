@@ -1,4 +1,7 @@
 # modules/ecs-service-mysql/variables.tf
+variable "name" {}
+variable "cluster_name" {}
+variable "capacity_provider_name" {}
 
 variable "name" {
   description = "Nombre base que se usará como prefijo para nombrar los recursos (ECS Service, Task Definition, etc.)."
