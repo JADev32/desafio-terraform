@@ -1,8 +1,4 @@
 # modules/ecs-service-mysql/variables.tf
-variable "name" {}
-variable "cluster_name" {}
-variable "capacity_provider_name" {}
-
 variable "name" {
   description = "Nombre base que se usará como prefijo para nombrar los recursos (ECS Service, Task Definition, etc.)."
   type        = string
@@ -10,6 +6,11 @@ variable "name" {
 
 variable "cluster_name" {
   description = "Nombre del clúster ECS donde se desplegará el servicio MySQL."
+  type        = string
+}
+
+variable "capacity_provider_name" {
+  description = "Nombre del capacity provider del cluster ECS"
   type        = string
 }
 
