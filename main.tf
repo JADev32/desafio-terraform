@@ -42,7 +42,8 @@ module "security" {
 module "iam" {
   source = "./modules/iam"
 
-  prefix = "${var.project_name}-${var.environment}"
+  prefix     = "${var.project_name}-${var.environment}"
+  aws_region = var.aws_region
 }
 
 # 4) Storage (EFS)
@@ -171,9 +172,10 @@ module "service_discovery" {
 
 # 13) ECS Service - MySQL
 module "ecs_service_mysql" {
-  source       = "./modules/ecs-service-mysql"
-  name         = "${var.project_name}-${var.environment}"
-  cluster_name = module.ecs_cluster.cluster_name
+  source                 = "./modules/ecs-service-mysql"
+  name                   = "${var.project_name}-${var.environment}"
+  cluster_name           = module.ecs_cluster.cluster_name
+  capacity_provider_name = module.ecs_cluster.capacity_provider_name
 
   private_subnets = module.network.private_subnet_ids
   sg_db_id        = module.security.sg_db_id

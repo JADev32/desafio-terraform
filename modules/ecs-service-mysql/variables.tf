@@ -1,6 +1,7 @@
 # modules/ecs-service-mysql/variables.tf
 variable "name" {}
 variable "cluster_name" {}
+variable "capacity_provider_name" {}
 
 variable "private_subnets" {
   type = list(string)
