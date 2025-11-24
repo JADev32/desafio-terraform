@@ -2,18 +2,34 @@ variable "project_name" {
   description = "Nombre del proyecto para tags y nombres lógicos."
   type        = string
   default     = "lab3-teracloud"
+
+  validation {
+    condition     = can(regex("^[a-z0-9-]+$", var.project_name))
+    error_message = "project_name solo puede tener minúsculas, números y guiones (ej: lab3-teracloud)."
+  }
 }
 
 variable "environment" {
   description = "Ambiente (dev, prod, etc.)."
   type        = string
   default     = "dev"
+
+
+  validation {
+    condition     = contains(["dev", "prod"], var.environment)
+    error_message = "environment debe ser uno de: dev, prod."
+  }
 }
 
 variable "aws_region" {
   description = "Región de AWS."
   type        = string
   default     = "us-east-1"
+
+  validation {
+    condition     = length(var.aws_region) > 0
+    error_message = "aws_region no puede estar vacío."
+  }
 }
 
 variable "db_host" {
@@ -45,6 +61,11 @@ variable "db_pass" {
   description = "Password del usuario de la base de datos."
   type        = string
   sensitive   = true
+
+  validation {
+    condition     = length(var.db_pass) >= 8
+    error_message = "db_pass debe tener al menos 8 caracteres."
+  }
 }
 
 ## variables target group
