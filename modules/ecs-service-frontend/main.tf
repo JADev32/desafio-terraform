@@ -67,6 +67,11 @@ resource "aws_ecs_service" "frontend_service" {
   task_definition = aws_ecs_task_definition.frontend_task.arn
   desired_count   = 2
 
+  ordered_placement_strategy {
+    type  = "spread" 
+    field = "instanceId"
+  }
+
   capacity_provider_strategy {
     capacity_provider = var.capacity_provider_name
     weight            = 1
@@ -77,6 +82,7 @@ resource "aws_ecs_service" "frontend_service" {
     subnets         = var.private_subnets
     security_groups = [var.sg_frontend_id]
   }
+
 
   load_balancer {
     target_group_arn = var.target_group_arn
