@@ -43,10 +43,10 @@ module "ecs_service_frontend" {
 
   ecs_task_execution_role_arn = module.iam.ecs_task_execution_role_arn
 
-  db_host_arn = module.ssm.db_parameters_arn.host
-  db_name_arn = module.ssm.db_parameters_arn.name
-  db_user_arn = module.ssm.db_parameters_arn.user
-  db_pass_arn = module.ssm.db_parameters_arn.password
+  db_host_arn = data.aws_ssm_parameter.db_host.arn
+  db_name_arn = data.aws_ssm_parameter.db_name.arn
+  db_user_arn = data.aws_ssm_parameter.db_user.arn
+  db_pass_arn = data.aws_ssm_parameter.db_pass.arn
 
   aws_region = var.aws_region
   tags       = local.common_tags
