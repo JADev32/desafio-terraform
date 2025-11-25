@@ -346,5 +346,88 @@ resource "aws_iam_role_policy_attachment" "codebuild_policy_attachment" {
   policy_arn = aws_iam_policy.codebuild_policy.arn
 }
 
+resource "aws_iam_role" "ecs_efs_access" {
+name = "ecs-efs-access-role"
+
+assume_role_policy = jsonencode({
+Version = "2012-10-17"
+Statement = [
+{
+Effect = "Allow"
+Principal = {
+Service = "ec2.amazonaws.com"
+}
+Action = "sts:AssumeRole"
+}
+]
+})
+}
+
+resource "aws_iam_policy" "ecs_efs_policy" {
+name        = "ecs-efs-policy"
+description = "Permisos para ECS montar EFS Access Point"
+
+policy = jsonencode({
+Version = "2012-10-17"
+Statement = [
+{
+Effect = "Allow"
+Action = [
+"elasticfilesystem:ClientMount",
+"elasticfilesystem:ClientWrite",
+"elasticfilesystem:ClientRootAccess"
+]
+Resource = "*"
+}
+]
+})
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_efs_attach" {
+role       = aws_iam_role.ecs_efs_access.name
+policy_arn = aws_iam_policy.ecs_efs_policy.arn
+}
+
+resource "aws_iam_role" "ecs_task_mysql_role" {
+  name = "ecs-task-mysql-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "ecs_task_mysql_policy" {
+  name        = "ecs-task-mysql-policy"
+  description = "Permisos para montar EFS desde Task Definition"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "elasticfilesystem:ClientMount",
+          "elasticfilesystem:ClientWrite",
+          "elasticfilesystem:ClientRootAccess"
+        ]
+        Resource = "arn:aws:elasticfilesystem:${var.aws_region}:${data.aws_caller_identity.current.account_id}:file-system/${var.efs_id}"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_mysql_attach" {
+  role       = aws_iam_role.ecs_task_mysql_role.name
+  policy_arn = aws_iam_policy.ecs_task_mysql_policy.arn
+}
 
 

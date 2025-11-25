@@ -34,6 +34,11 @@ variable "ecs_task_execution_role_arn" {
   type        = string
 }
 
+variable "ecs_task_role_arn" {
+  description = "ARN del rol de tarea de ECS (ECS Task Role) que otorga permisos a la tarea para interactuar con otros servicios de AWS."
+  type        = string
+}
+
 variable "mysql_image" {
   description = "Nombre o URI de la imagen Docker de MySQL que se utilizará para el contenedor (ej. 'mysql/mysql-server:8.0')."
   type        = string

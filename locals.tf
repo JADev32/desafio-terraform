@@ -34,6 +34,6 @@ data "aws_ssm_parameter" "db_user" {
 }
 
 data "aws_ssm_parameter" "db_pass" {
-  name           = "${local.ssm_db_prefix}/db_pass"
+  name            = "${local.ssm_db_prefix}/db_pass"
   with_decryption = true
 }

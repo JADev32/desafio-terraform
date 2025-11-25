@@ -7,3 +7,8 @@ variable "aws_region" {
   description = "AWS region"
   type        = string
 }
+
+variable "efs_id" {
+  description = "EFS File System ID"
+  type        = string
+}

@@ -8,7 +8,7 @@ terraform {
     use_lockfile = true
     encrypt      = true
   }
-  
+
 
   required_providers {
     aws = {

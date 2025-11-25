@@ -65,6 +65,7 @@ module "ecs_service_mysql" {
   efs_access_point_id = module.efs.access_point_id
 
   ecs_task_execution_role_arn = module.iam.ecs_task_execution_role_arn
+  ecs_task_role_arn = module.iam.ecs_task_mysql_role_arn
 
   mysql_image          = module.ecr.mysql_repository_url
   service_registry_arn = module.service_discovery.mysql_service_arn
