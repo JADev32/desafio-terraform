@@ -19,5 +19,8 @@ github_full_repo_id = "santinozc11/lab2-codepipeline"
 github_branch       = "main"
 
 notification_emails = [
-  "santinochamia1192@gmail.com"
+  "santinochamia1192@gmail.com",
+  "aguppesce@gmail.com",
+  "maguimourino@gmail.com",
+  "alladio64@gmail.com"
 ]
