@@ -44,6 +44,17 @@ variable "service_registry_arn" {
   description = "ARN del servicio de Cloud Map para MySQL al que se registrará el servicio ECS (para service discovery)."
 }
 
+variable "mysql_database" {
+  description = "Nombre de la base de datos MySQL"
+  type        = string
+}
+
+variable "mysql_root_password" {
+  description = "Contraseña root de MySQL"
+  type        = string
+  sensitive   = true
+}
+
 variable "aws_region" {
   description = "Región de AWS (para logs)"
   type        = string
@@ -53,4 +64,10 @@ variable "tags" {
   description = "Tags comunes"
   type        = map(string)
   default     = {}
+}
+
+variable "efs_access_point_id" {
+  description = "ID del punto de acceso de EFS para la tarea MySQL."
+  type        = string
+  
 }

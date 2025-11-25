@@ -37,6 +37,16 @@ crash.*.log
 *_override.tf.json
 
 ############################################################
+# Variables files (contienen datos sensibles)
+############################################################
+*.tfvars
+*.tfvars.json
+
+# Excepción: archivos de ejemplo (sin datos reales)
+!*.tfvars.example
+!example.tfvars
+
+############################################################
 # Editor/IDE files
 ############################################################
 # VS Code

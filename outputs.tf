@@ -29,7 +29,7 @@ output "efs_id" {
   value       = module.efs.file_system_id
 }
 
-output "efs_mount_targets_ids" {
+output "efs_access_point_id" {
   description = "IDs del Access Point."
   value       = module.efs.access_point_id
 }

@@ -19,7 +19,11 @@ resource "aws_ecs_task_definition" "mysql_task" {
     efs_volume_configuration {
       file_system_id     = var.efs_id
       transit_encryption = "ENABLED"
-      root_directory     = "/"
+      
+      authorization_config {
+        access_point_id = var.efs_access_point_id
+        iam             = "DISABLED"
+      }
     }
   }
 
@@ -38,8 +42,8 @@ resource "aws_ecs_task_definition" "mysql_task" {
       ]
 
       environment = [
-        { name = "MYSQL_DATABASE", value = "app_db" },
-        { name = "MYSQL_ROOT_PASSWORD", value = "password" }
+        { name = "MYSQL_DATABASE", value = var.mysql_database },
+        { name = "MYSQL_ROOT_PASSWORD", value = var.mysql_root_password }
       ]
 
       mountPoints = [
