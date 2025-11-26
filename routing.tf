@@ -22,7 +22,7 @@ module "application_load_balancer" {
   security_group_ids = [module.security.sg_alb_id]
 
   target_group_arn    = module.target_group.target_group_arn
-  acm_certificate_arn = var.acm_certificate_arn != "" ? var.acm_certificate_arn : data.aws_acm_certificate.cert[0].arn
+  acm_certificate_arn = length(data.aws_acm_certificate.cert) > 0 ? data.aws_acm_certificate.cert[0].arn : var.acm_certificate_arn
 }
 
 # 9) Route 53 
