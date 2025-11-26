@@ -15,6 +15,15 @@ El objetivo principal fue construir una plataforma capaz de:
 
 ---
 
+## Pre-requisitos
+
+  - Parameter store creados previamente para la base de datos
+  - Hosted zone creada con el certificado
+  - Estar logueado en CLI
+  - Crear tfvars como en el siguiente ejemplo |https://github.com/JADev32/desafio-terraform/blob/develop/envs/dev.tfvars.example|
+
+---
+
 ## Arquitectura Implementada
 
 La infraestructura desarrollada incluye:
