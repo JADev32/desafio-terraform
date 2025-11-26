@@ -15,20 +15,25 @@ variable "ami_id" {
 
 variable "instance_type" {
   type        = string
+  description = "Tipo de instancia EC2 que utilizará el cluster ECS (por ejemplo, t3.medium)."
 }
 
 variable "ecs_instance_profile_arn" {
   type        = string
+  description = "ARN del Instance Profile asociado a las instancias EC2 del cluster ECS."
 }
 
 variable "private_subnets" {
-  type = list(string)
+  type        = list(string)
+  description = "Lista de subnets privadas donde se lanzarán las instancias EC2 del cluster ECS."
 }
 
 variable "sg_ecs_hosts_id" {
-  type = string
+  type        = string
+  description = "ID del Security Group asignado a las instancias EC2 que forman parte del cluster ECS."
 }
 
 variable "tags" {
-  type = map(string)
+  type        = map(string)
+  description = "Mapa de etiquetas (tags) que se aplicarán a los recursos creados por el módulo."
 }

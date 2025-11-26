@@ -24,5 +24,5 @@ variable "protocol" {
 variable "health_check_path" {
   description = "Ruta para el Health Check."
   type        = string
-  default     = "/css/twitter.css"
+  default     = "/"
 }

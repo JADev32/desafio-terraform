@@ -1,0 +1,27 @@
+project_name = "lab3-teracloud"
+environment  = "dev"
+aws_region   = "us-east-1"
+
+# Target Group y ALB
+target_group_name     = "lab3-target-group"
+tg_health_check_path  = "/"
+alb_name              = "lab3-alb"
+
+# REEMPLAZAR CON VALORES REALES:
+acm_certificate_arn   = "arn:aws:acm:REGION:ACCOUNT:certificate/CERT-ID"
+hosted_zone_name_base = "tu-dominio.com"
+
+# Pipeline variables - REEMPLAZAR CON VALORES REALES:
+codeconnection_arn = "arn:aws:codeconnections:REGION:ACCOUNT:connection/CONNECTION-ID"
+github_full_repo_id = "usuario/repositorio"
+github_branch       = "main"
+
+# Notificaciones
+notification_emails = [
+  "email1@ejemplo.com",
+  "email2@ejemplo.com"
+]
+
+# Network configuration
+vpc_cidr           = "10.0.0.0/16"
+availability_zones = ["us-east-1a", "us-east-1b"]

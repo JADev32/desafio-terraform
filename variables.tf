@@ -2,49 +2,34 @@ variable "project_name" {
   description = "Nombre del proyecto para tags y nombres lógicos."
   type        = string
   default     = "lab3-teracloud"
+
+  validation {
+    condition     = can(regex("^[a-z0-9-]+$", var.project_name))
+    error_message = "project_name solo puede tener minúsculas, números y guiones (ej: lab3-teracloud)."
+  }
 }
 
 variable "environment" {
   description = "Ambiente (dev, prod, etc.)."
   type        = string
   default     = "dev"
+
+
+  validation {
+    condition     = contains(["dev", "prod"], var.environment)
+    error_message = "environment debe ser uno de: dev, prod."
+  }
 }
 
 variable "aws_region" {
   description = "Región de AWS."
   type        = string
   default     = "us-east-1"
-}
-
-variable "db_host" {
-  description = "Host/endpoint interno de MySQL (lo lee el frontend)."
-  type        = string
-}
-
-variable "db_name" {
-  description = "Nombre de la base de datos."
-  type        = string
 
   validation {
-    condition     = length(var.db_name) > 0
-    error_message = "db_name no puede estar vacío."
+    condition     = length(var.aws_region) > 0
+    error_message = "aws_region no puede estar vacío."
   }
-}
-
-variable "db_user" {
-  description = "Usuario de la app para la base de datos."
-  type        = string
-
-  validation {
-    condition     = length(var.db_user) > 0
-    error_message = "db_user no puede estar vacío."
-  }
-}
-
-variable "db_password" {
-  description = "Password del usuario de la base de datos."
-  type        = string
-  sensitive   = true
 }
 
 ## variables target group
@@ -67,6 +52,7 @@ variable "alb_name" {
 variable "acm_certificate_arn" {
   description = "ARN del certificado de ACM para el listener HTTPS."
   type        = string
+  default     = ""
 }
 
 #variable route
@@ -80,4 +66,38 @@ variable "frontend_image_tag" {
   description = "Tag de la imagen del frontend en ECR"
   type        = string
   default     = "latest"
+}
+
+# Pipeline variables
+variable "codeconnection_arn" {
+  description = "ARN de CodeStar Connections para GitHub"
+  type        = string
+}
+
+variable "github_full_repo_id" {
+  description = "Full repository id en GitHub, formato owner/repo"
+  type        = string
+}
+
+variable "github_branch" {
+  description = "Branch que dispara el pipeline"
+  type        = string
+  default     = "main"
+}
+
+variable "notification_emails" {
+  description = "Lista de emails para notificaciones SNS del pipeline"
+  type        = list(string)
+  default     = []
+}
+
+# Network variables
+variable "vpc_cidr" {
+  description = "CIDR block para la VPC"
+  type        = string
+}
+
+variable "availability_zones" {
+  description = "Lista de zonas de disponibilidad"
+  type        = list(string)
 }

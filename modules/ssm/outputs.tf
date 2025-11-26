@@ -5,7 +5,7 @@ output "db_parameters_arn" {
     host     = aws_ssm_parameter.db_host.arn
     name     = aws_ssm_parameter.db_name.arn
     user     = aws_ssm_parameter.db_user.arn
-    password = aws_ssm_parameter.db_password.arn
+    password = aws_ssm_parameter.db_pass.arn
   }
 }
 
@@ -16,6 +16,6 @@ output "db_parameters_name" {
     host     = aws_ssm_parameter.db_host.name
     name     = aws_ssm_parameter.db_name.name
     user     = aws_ssm_parameter.db_user.name
-    password = aws_ssm_parameter.db_password.name
+    password = aws_ssm_parameter.db_pass.name
   }
 }

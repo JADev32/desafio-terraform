@@ -1,11 +1,10 @@
 locals {
-  # Nos aseguramos de no terminar en doble barra
   db_path = trimsuffix(var.db_parameter_path_prefix, "/")
 }
 
 # /lab3/<env>/db/host
 resource "aws_ssm_parameter" "db_host" {
-  name        = "${local.db_path}/host"
+  name        = "${local.db_path}_host"
   description = "Host/endpoint de MySQL."
   type        = "String"
   value       = var.db_host
@@ -18,7 +17,7 @@ resource "aws_ssm_parameter" "db_host" {
 
 # /lab3/<env>/db/name
 resource "aws_ssm_parameter" "db_name" {
-  name        = "${local.db_path}/name"
+  name        = "${local.db_path}_name"
   description = "Nombre de la base de datos."
   type        = "String"
   value       = var.db_name
@@ -31,7 +30,7 @@ resource "aws_ssm_parameter" "db_name" {
 
 # /lab3/<env>/db/user
 resource "aws_ssm_parameter" "db_user" {
-  name        = "${local.db_path}/user"
+  name        = "${local.db_path}_user"
   description = "Usuario de la aplicación."
   type        = "String"
   value       = var.db_user
@@ -43,11 +42,11 @@ resource "aws_ssm_parameter" "db_user" {
 }
 
 # /lab3/<env>/db/password (SecureString)
-resource "aws_ssm_parameter" "db_password" {
-  name        = "${local.db_path}/password"
+resource "aws_ssm_parameter" "db_pass" {
+  name        = "${local.db_path}_pass"
   description = "Password del usuario de la base (SecureString)."
   type        = "SecureString"
-  value       = var.db_password
+  value       = var.db_pass
   overwrite   = true
   # key_id = "alias/aws/ssm"   # opcional, default usa la key administrada de SSM
 

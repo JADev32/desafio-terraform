@@ -17,17 +17,15 @@ echo "ECS_CLUSTER=${var.cluster_name}" >> /etc/ecs/ecs.config
 EOF
   )
 
+  # Las instancias van en subnets privadas vía el ASG,
+  # así que no necesitamos tocar associate_public_ip acá.
   vpc_security_group_ids = [var.sg_ecs_hosts_id]
-
-  network_interfaces {
-    associate_public_ip_address = false
-  }
 
   tag_specifications {
     resource_type = "instance"
 
     tags = merge(var.tags, {
-      Name = "${var.name}-ecs-instance"
+      Name             = "${var.name}-ecs-instance"
       AmazonECSManaged = "true"
     })
   }
@@ -39,9 +37,9 @@ EOF
 
 resource "aws_autoscaling_group" "ecs_asg" {
   name                = "${var.name}-asg"
-  max_size            = 2
-  min_size            = 1
-  desired_capacity    = 2
+  max_size            = 5
+  min_size            = 3
+  desired_capacity    = 3
   vpc_zone_identifier = var.private_subnets
   health_check_type   = "EC2"
 

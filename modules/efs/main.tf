@@ -7,27 +7,34 @@ resource "aws_efs_file_system" "main" {
   })
 }
 
-resource "aws_efs_mount_target" "main" {
-  for_each = { for idx, subnet_id in var.private_subnet_ids : idx => subnet_id }
-
+# Mount target en la primera subnet privada
+resource "aws_efs_mount_target" "main_az1" {
   file_system_id  = aws_efs_file_system.main.id
-  subnet_id       = each.value
+  subnet_id       = var.private_subnet_ids[0]
   security_groups = [var.efs_security_group_id]
 }
+
+# Mount target en la segunda subnet privada
+resource "aws_efs_mount_target" "main_az2" {
+  file_system_id  = aws_efs_file_system.main.id
+  subnet_id       = var.private_subnet_ids[1]
+  security_groups = [var.efs_security_group_id]
+}
+
 
 resource "aws_efs_access_point" "mysql" {
   file_system_id = aws_efs_file_system.main.id
 
   posix_user {
-    gid = 1000
-    uid = 1000
+    uid = 999
+    gid = 999
   }
 
   root_directory {
     path = "/mysql-data"
     creation_info {
-      owner_gid   = 1000
-      owner_uid   = 1000
+      owner_uid   = 999
+      owner_gid   = 999
       permissions = "755"
     }
   }

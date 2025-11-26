@@ -29,20 +29,20 @@ output "efs_id" {
   value       = module.efs.file_system_id
 }
 
-output "efs_mount_targets_ids" {
+output "efs_access_point_id" {
   description = "IDs del Access Point."
   value       = module.efs.access_point_id
 }
 
-output "ssm_db_parameters_arn" {
-  description = "ARNs de parámetros SSM de DB (para ECS/pipeline)."
-  value       = module.ssm.db_parameters_arn
-}
+# output "ssm_db_parameters_arn" {
+#   description = "ARNs de parámetros SSM de DB (para ECS/pipeline)."
+#   value       = module.ssm.db_parameters_arn
+# }
 
-output "ssm_db_parameters_name" {
-  description = "Nombres de parámetros SSM de DB."
-  value       = module.ssm.db_parameters_name
-}
+# output "ssm_db_parameters_name" {
+#   description = "Nombres de parámetros SSM de DB."
+#   value       = module.ssm.db_parameters_name
+# }
 
 output "iam_roles_arn" {
   description = "ARNs de roles IAM."
