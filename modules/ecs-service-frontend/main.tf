@@ -66,7 +66,11 @@ resource "aws_ecs_service" "frontend_service" {
   cluster         = var.cluster_name
   task_definition = aws_ecs_task_definition.frontend_task.arn
   desired_count   = 2
-
+  
+#agregado para solucionar el problema de las instancias
+  deployment_minimum_healthy_percent = 50
+  deployment_maximum_percent         = 100
+#
   ordered_placement_strategy {
     type  = "spread" 
     field = "instanceId"

@@ -52,6 +52,7 @@ variable "alb_name" {
 variable "acm_certificate_arn" {
   description = "ARN del certificado de ACM para el listener HTTPS."
   type        = string
+  default     = ""
 }
 
 #variable route
